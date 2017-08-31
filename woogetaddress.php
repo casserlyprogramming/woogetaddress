@@ -93,7 +93,7 @@ function wga_add_address_lookup() {
             jQuery('#billing_address_2').val(addressArray[1]);
             jQuery('#billing_city').val(addressArray[5]);
             jQuery('#billing_state').val(addressArray[6]);
-            jQuery('#billing_postcode').val($jQuery("#billingSearch").val());
+            jQuery('#billing_postcode').val(jQuery("#billingSearch").val());
         });
     });
     </script>
