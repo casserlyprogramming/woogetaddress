@@ -13,6 +13,9 @@ if (!defined('ABSPATH'))
     exit; // Exit 
 
 // Actions 
+// This one does the action for both shipping and billing - hence the stupid
+// code on the client side that the address to both. 
+add_action('woocommerce_before_edit_account_address_form', 'wga_add_address_lookup');
 add_action('woocommerce_before_checkout_billing_form', 'wga_add_address_lookup');
 add_action('woocommerce_get_sections_products', 'wga_add_setting_section');
 add_action('woocommerce_get_settings_products', 'wga_add_settings', 10, 2);
@@ -58,7 +61,7 @@ function wga_add_address_lookup() {
 ?>
     <p>
         <input type="text" class="input-text" placeholder="Enter postcode" 
-               name="billingSearch" id="billingSearch"/>
+               name="addressSearch" id="addressSearch"/>
         <a href="#" class="button" id="btnSearchPC">Search</a>
     </p>
     <p>
@@ -70,7 +73,7 @@ function wga_add_address_lookup() {
         // Button click event
         jQuery("#btnSearchPC").click(function(){
             // TODO: error handling here too!
-            var uri = 'https://api.getaddress.io/find/' + jQuery("#billingSearch").val() + '?api-key=<?php echo $api_key; ?>';
+            var uri = 'https://api.getaddress.io/find/' + jQuery("#addressSearch").val() + '?api-key=<?php echo $api_key; ?>';
 
             jQuery.getJSON(uri).done(function(data){
                 // TODO: error handling here
@@ -89,11 +92,19 @@ function wga_add_address_lookup() {
             var address = options[this.value];
             var addressArray = address.split(', ');
 
+            // Billing address
             jQuery('#billing_address_1').val(addressArray[0]);
             jQuery('#billing_address_2').val(addressArray[1]);
             jQuery('#billing_city').val(addressArray[5]);
             jQuery('#billing_state').val(addressArray[6]);
-            jQuery('#billing_postcode').val(jQuery("#billingSearch").val());
+            jQuery('#billing_postcode').val(jQuery("#addressSearch").val());
+            
+            // Shipping address
+            jQuery('#shipping_address_1').val(addressArray[0]);
+            jQuery('#shipping_address_2').val(addressArray[1]);
+            jQuery('#shipping_city').val(addressArray[5]);
+            jQuery('#shipping_state').val(addressArray[6]);
+            jQuery('#shipping_postcode').val(jQuery("#addressSearch").val());
         });
     });
     </script>
